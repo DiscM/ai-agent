@@ -1,0 +1,10 @@
+tools:
+  active: [calculator]
+  catalog: [read_file, write_file, openai_chat]
+policy:
+  critical_threshold: 0.7
+  allow_interrupts: true
+hooks:
+  draft: draft_rule_based
+  decide: decide_simple
+  finalize: finalize_min

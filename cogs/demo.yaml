@@ -1,0 +1,8 @@
+agent_config: config/agent.yaml
+defaults:
+  max_actions: 1
+steps:
+  - task: "calc 19.5% of 349"
+  - task: "calc 10% of 50"
+    policy:
+      critical_threshold: 0.8
