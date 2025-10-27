@@ -1,7 +1,7 @@
 # AI Agent Draft
 
-Functional, hook-first agent. Skip-if-missing. Standardized tool adapters. CLI included.
-
+You provide a task, choose active tools by name, and the agent runs one action per cycle through that pipeline, producing a final answer and a structured trace.
+API key goes into tools.py -> requires_env=["OPENAI_API_KEY"]
 ## Quick start
 ```bash
 python -m venv .venv
