@@ -38,19 +38,51 @@ tools = make_tool_registry(specs)
 Set keys via env (`export MY_API_KEY=...`). Missing keys yield a structured error and trigger the gate.
 
 ## Hooks (optional)
-- `draft(task, ctx) -> Draft`
-- `decide(task, draft, ctx) -> Decision`
 - `reflect(...) -> Optional[str]`
+- Load prior context. If missing: skip.
 - `evaluate_critical(...) -> Gate`
+- Score issues and set intervene. If missing: fallback evaluator.
 - `discover_tools(task, decision, ctx, catalog) -> List[{"name","reason"}]`
+- Suggest tools for the next cycle. If missing: fallback suggester.
 - `query_user_plan(task, gate, ctx) -> {"allow_continue": bool, ...}`
+- Ask user for a plan when intervene is true. If missing: agent returns a prompt instead of blocking.
 - `finalize(...) -> str`
+- Compose final text. If missing: default finalizer.
 - `persist(task, ctx, final_text, gate, discovered) -> Any`
+- Save results. If missing: writes JSONL to .agents/memory.jsonl.
 - `recall(task, ctx) -> List[Any]`
+- Load prior context. If missing: skip.
 
 ## Critical gate policy
-- `critical_threshold` is your “slider.” Default `0.7`.
-- `allow_interrupts` decides if the agent pauses for a plan.
+### Critical threshold
+
+#### Scale guide
+
+* **0.0–0.3** — noise; ignore.
+* **0.4–0.6** — minor; log only.
+* **0.7–0.84** — high; usually interrupt.
+* **0.85–1.0** — critical; interrupt.
+
+#### Built-in triggers and default severities
+
+* **TOOL_MISSING** (decide wants a tool that isn’t active): **0.80**
+* **TOOL_ERROR** (generic error): **0.90**
+* **RATE_LIMIT** (keywords: `quota`, `limit`, `rate`, `429`): **0.85**
+* **AUTH** (keywords: `api key`, `unauthorized`, `forbidden`, `auth`): **0.95**
+* **DATA_MISSING** (keywords: `not found`, `no such file`, `file not found`, `missing`): **0.70**
+
+#### Examples
+
+* Missing `read_file` when selected → severity **0.80**. Threshold **0.70** interrupts.
+* 401 from API → **0.95**. Always interrupts unless threshold ≥ **0.96**.
+* 429 rate limit → **0.85**. Interrupts at **0.70**, not at **0.90+**.
+* Bad file path → **0.70**. Interrupts at default **0.70**.
+
+#### Suggested thresholds
+
+* **Interactive dev:** **0.60** to catch issues early.
+* **Default:** **0.70**.
+* **Unattended batch:** **0.90** to minimize stops.
 
 ## Dev
 ```bash
