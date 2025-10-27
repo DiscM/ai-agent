@@ -1,8 +1,11 @@
+![Python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue)
+[![License](https://img.shields.io/github/license/DiscM/ai-agent)](LICENSE)
+
 # AI Agent – Quick Start
 
-## API key (optional)
+## API key
 
-If you enable the OpenAI-backed tool, set the key first.
+Set the key first.
 
 ```bash
 # mac/linux
