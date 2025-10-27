@@ -15,6 +15,7 @@ dev = ["pytest"]
 
 [project.scripts]
 ai-agent = "ai_agent.core:cli_main"
+ai-agent-cog = "ai_agent.cog_runner:cli_cog"
 
 [tool.setuptools.packages.find]
 where = ["src"]

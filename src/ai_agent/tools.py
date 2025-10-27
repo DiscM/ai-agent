@@ -4,15 +4,14 @@ from typing import Any, Dict, List, Tuple
 from .types import ToolSpec, ToolFn, ToolResult
 
 # ---- env handling + registry ----
-def _load_env(keys: List[str]) -> Tuple[Dict[str, str], List[str]]:
+def _load_env(keys):
     found, missing = {}, []
     for k in keys:
         v = os.getenv(k, "")
-        if v:
-            found[k] = v
-        else:
-            missing.append(k)
+        if v: found[k] = v
+        else: missing.append(k)
     return found, missing
+
 
 def make_tool_registry(specs: List[ToolSpec]) -> Dict[str, ToolFn]:
     registry: Dict[str, ToolFn] = {}
